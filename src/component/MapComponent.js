@@ -103,7 +103,7 @@ class MapComponent extends Component {
             swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
             return
         }
-        download.downloadFile(`path-${new Date().getTime()}.bak`, this.state.positions)
+        download.downloadFile(`Path-${new Date().getTime()}.bak.json`, this.state.positions)
     }
 
     handelChange(e) {
@@ -134,9 +134,9 @@ class MapComponent extends Component {
         return (
             <div>
                 <div id="container" className="map" style={{height: '800px'}}/>
-                <div className={"info"}>操作说明：绘制点, 点之间跨度最好不要太大.</div>
+                <div className={"info"}>操作说明：标点按路线顺序标记 跨度不能太大</div>
                 <div className={"info info2"}>
-                    <Input placeholder="输入地址" onChange={this.handelChange.bind(this)}/>
+                    <Input placeholder="输入目标区域地址" onChange={this.handelChange.bind(this)}/>
                     <Button type="link" onClick={this.forward}>点击跳转</Button>
                 </div>
                 <div className="input-card" style={{width: '25rem'}}>
@@ -154,7 +154,6 @@ class MapComponent extends Component {
                         </Modal>
                     </div>
                 </div>
-
             </div>
 
         );
