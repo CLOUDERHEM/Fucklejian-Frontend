@@ -4,6 +4,8 @@ import {
 
 } from 'antd';
 import api from "../api/api";
+import oneTrim from "../util/trim";
+import swal from "sweetalert";
 
 class UploadDetail extends Component {
 
@@ -13,11 +15,22 @@ class UploadDetail extends Component {
             labelCol: {span: 5}, wrapperCol: {span: 16},
         };
         const onFinish = (values) => {
-            console.log(values)
-            if (values.routeLine === '' || values.routeLine === undefined) {
+
+            values = oneTrim(values)
+
+            if (values.routeLine === undefined || values.routeLine === '') {
                 values.routeLine = this.props.routeLine
             } else {
-                values.routeLine = JSON.parse(values.routeLine)
+                try {
+                    values.routeLine = JSON.parse(values.routeLine)
+                } catch (e) {
+                    swal('跑步路线解析错误', '请检查JSON格式是否有误', 'error')
+                    return
+                }
+                if (values.routeLine.length < 10) {
+                    swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "error")
+                    return
+                }
             }
             api.uploadDetail(values, values.ak).then(res => {
                 if (res.code !== 0) return
