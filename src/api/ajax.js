@@ -7,9 +7,6 @@ export default function ajax(url, data = {}, param = '', type = 'GET') {
     return new Promise((resolve, reject) => {
         let promise;
 
-        console.log(data)
-        console.log(param)
-        console.log(type)
         if (type === 'GET') {
             promise = axios.get(url, {
                 params: data
