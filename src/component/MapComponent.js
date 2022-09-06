@@ -1,5 +1,5 @@
 import AMapLoader from '@amap/amap-jsapi-loader';
-import {Component, useState} from "react";
+import {Component} from "react";
 import swal from 'sweetalert'
 import '../App.css';
 import './index.css'
@@ -141,7 +141,7 @@ class MapComponent extends Component {
                 </div>
                 <div className="input-card" style={{width: '25rem'}}>
                     <div className={"input-item"}>
-                        <input type="radio" checked="true"/><span
+                        <input type="radio" checked={true} readOnly={true}/><span
                         className="input-text">画点</span>
                     </div>
                     <div className="input-item">
