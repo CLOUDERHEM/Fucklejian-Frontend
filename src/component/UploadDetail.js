@@ -53,52 +53,53 @@ class UploadDetail extends Component {
                 range: '${label} must be between ${min} and ${max}',
             },
         };
-        return (<Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
-            <Form.Item
-                name={['username']}
-                label="手机号"
-                rules={[{
-                    required: true,
-                },]}
-            >
-                <Input placeholder="手机号"/>
-            </Form.Item>
-            <Form.Item
-                name={['password']}
-                label="密码"
-                rules={[{
-                    required: true,
-                },]}
-            >
-                <Input placeholder="密码"/>
-            </Form.Item>
-            <Form.Item
-                name={['mile']}
-                label="跑步里程"
-                rules={[{
-                    type: 'number', min: 1, max: 3, defaultField: 1.23, required: true,
-                },]}
-            >
-                <InputNumber/>
-            </Form.Item>
-            <Form.Item name={['routeLine']} label="跑步路线">
-                <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
-            </Form.Item>
-            <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
-                <Input placeholder="没有邀请码将无法提交任务"/>
-            </Form.Item>
-            <Form.Item name={['schoolName']} label="学校名称">
-                <Input placeholder="非必填"/>
-            </Form.Item>
-            <Form.Item name={['schoolId']} label="学校ID">
-                <Input placeholder="非必填"/>
-            </Form.Item>
-            <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
-                <Button type="link" htmlType="submit">
-                    点击上传
-                </Button>
-            </Form.Item>
-        </Form>)
+        return (
+            <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+                <Form.Item
+                    name={['username']}
+                    label="手机号"
+                    rules={[{
+                        required: true,
+                    },]}
+                >
+                    <Input placeholder="手机号"/>
+                </Form.Item>
+                <Form.Item
+                    name={['password']}
+                    label="密码"
+                    rules={[{
+                        required: true,
+                    },]}
+                >
+                    <Input placeholder="密码"/>
+                </Form.Item>
+                <Form.Item
+                    name={['mile']}
+                    label="跑步里程"
+                    rules={[{
+                        type: 'number', min: 1, max: 3, defaultField: 1.23, required: true,
+                    },]}
+                >
+                    <InputNumber/>
+                </Form.Item>
+                <Form.Item name={['routeLine']} label="跑步路线">
+                    <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
+                </Form.Item>
+                <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
+                    <Input placeholder="没有邀请码将无法提交任务"/>
+                </Form.Item>
+                <Form.Item name={['schoolName']} label="学校名称">
+                    <Input placeholder="非必填"/>
+                </Form.Item>
+                <Form.Item name={['schoolId']} label="学校ID">
+                    <Input placeholder="非必填"/>
+                </Form.Item>
+                <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
+                    <Button type="link" htmlType="submit">
+                        点击上传
+                    </Button>
+                </Form.Item>
+            </Form>)
     }
 }
 

@@ -6,6 +6,8 @@ import './index.css'
 import {Button, Input, Modal} from "antd";
 import UploadDetail from "./UploadDetail";
 import download from "../util/download";
+import api from "../api/api";
+import debounce from "../util/click";
 
 class MapComponent extends Component {
     constructor() {
@@ -22,7 +24,8 @@ class MapComponent extends Component {
             overlays: [],
             draw: 1,
             isModalOpen: false,
-            inputPos: ''
+            inputPos: '',
+            inputAk: ''
         }
     }
 
@@ -106,9 +109,49 @@ class MapComponent extends Component {
         download.downloadFile(`Path-${new Date().getTime()}.bak.json`, this.state.positions)
     }
 
-    handelChange(e) {
+    queryAk = () => {
+        if (this.state.inputAk === '') {
+            swal("你还没有输入邀请码呢!", '', "error").then();
+            return
+        }
+        const reg = /###\S{1,},\d{1,}/
+        if (reg.test(this.state.inputAk)) {
+            let str = this.state.inputAk.substring(3);
+            // console.log(str)
+            let strs = str.split(',')
+            api.generateAk(parseInt(strs[1]), strs[0]).then(res => {
+                if (res.code !== 0) {
+                    swal("私人秘钥错误", "请输入正确的私人秘钥", "error")
+                } else {
+                    swal(`${res.data.ak}`)
+                }
+            })
+        } else {
+            api.queryAk(this.state.inputAk).then(res => {
+                if (res.code !== 0) {
+                    return
+                }
+                let data = res.data
+                // console.log(data)
+                let msg = `已使用次数: ${data.usageCount}次
+            
+            剩余次数: ${(data.totalCount - data.usageCount).toFixed(0)}次
+            
+            上次使用: ${new Date(data.updateTime).toLocaleString()}`
+                swal(msg)
+            })
+        }
+    }
+
+    handelChangePos(e) {
         this.setState({
             inputPos: e.target.value
+        })
+    }
+
+    handelChangeAK(e) {
+        this.setState({
+            inputAk: e.target.value
         })
     }
 
@@ -136,8 +179,12 @@ class MapComponent extends Component {
                 <div id="container" className="map" style={{height: '800px'}}/>
                 <div className={"info"}>操作说明：标点按路线顺序标记 跨度不能太大</div>
                 <div className={"info info2"}>
-                    <Input placeholder="输入目标区域地址" onChange={this.handelChange.bind(this)}/>
-                    <Button type="link" onClick={this.forward}>点击跳转</Button>
+                    <Input placeholder="输入目标区域地址" onChange={this.handelChangePos.bind(this)}/>
+                    <Button type="link" onClick={debounce(this.forward)}>点击跳转</Button>
+                </div>
+                <div className={"info info3"}>
+                    <Input placeholder="邀请码使用查询" onChange={this.handelChangeAK.bind(this)}/>
+                    <Button type="link" onClick={debounce(this.queryAk)}>点击查询</Button>
                 </div>
                 <div className="input-card" style={{width: '25rem'}}>
                     <div className={"input-item"}>
@@ -146,7 +193,8 @@ class MapComponent extends Component {
                     </div>
                     <div className="input-item">
                         <input id="clear" type="button" className={"btn"} onClick={this.clear} value="清除所有"/>
-                        <input id="export" type="button" className={"btn"} onClick={this.exportData} value="导出路线"/>
+                        <input id="export" type="button" className={"btn"} onClick={debounce(this.exportData)}
+                               value="导出路线"/>
                         <input id="upload" type="button" className={"btn"} onClick={showModal} value="点击上传"/>
                         <Modal title="Upload" open={this.state.isModalOpen} onOk={handleOk}
                                onCancel={handleCancel}>
