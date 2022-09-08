@@ -6,8 +6,22 @@ import {
 import api from "../api/api";
 import oneTrim from "../util/trim";
 import swal from "sweetalert";
+import React from "react";
 
 class UploadDetail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            distance: this.props.distance
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            distance: nextProps.distance
+        })
+    }
 
 
     render() {
@@ -54,7 +68,10 @@ class UploadDetail extends Component {
             },
         };
         return (
-            <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+            <Form  {...layout} name="nest-messages"
+                   onFinish={onFinish}
+                   validateMessages={validateMessages}
+            >
                 <Form.Item
                     name={['username']}
                     label="手机号"
@@ -74,10 +91,11 @@ class UploadDetail extends Component {
                     <Input placeholder="密码"/>
                 </Form.Item>
                 <Form.Item
+                    tooltip={"1.00 ~ 3.00 km"}
                     name={['mile']}
                     label="跑步里程"
                     rules={[{
-                        type: 'number', min: 1, max: 3, defaultField: 1.23, required: true,
+                        type: 'number', min: 1, max: 3, required: true,
                     },]}
                 >
                     <InputNumber/>
@@ -95,7 +113,7 @@ class UploadDetail extends Component {
                     <Input placeholder="非必填"/>
                 </Form.Item>
                 <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
-                    <Button type="link" htmlType="submit">
+                    <Button shape="round" htmlType="submit" style={{color: "#4682B4"}}>
                         点击上传
                     </Button>
                 </Form.Item>

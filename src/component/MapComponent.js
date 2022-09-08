@@ -25,7 +25,8 @@ class MapComponent extends Component {
             draw: 1,
             isModalOpen: false,
             inputPos: '',
-            inputAk: ''
+            inputAk: '',
+            distance: 0
         }
     }
 
@@ -42,7 +43,12 @@ class MapComponent extends Component {
                 });
                 this.mouseTool = new AMap.MouseTool(this.map);
                 this.mouseTool.on('draw', (e) => {
-                    // console.log(e.obj._position)
+                    let last = this.state.positions.at(-1)
+                    if (last !== undefined) {
+                        let add = this.amap.GeometryUtil.distance([e.obj.getPosition().lng, e.obj.getPosition().lat],
+                            [last.longitude, last.latitude]) + this.state.distance;
+                        this.setState({distance: add})
+                    }
                     this.state.positions.push({
                         'latitude': e.obj.getPosition().lat,
                         'longitude': e.obj.getPosition().lng
@@ -96,6 +102,7 @@ class MapComponent extends Component {
         this.setState({positions: []})
         this.map.remove(this.state.overlays)
         this.setState({overlays: []})
+        this.setState({distance: 0})
     }
 
     exportData = () => {
@@ -155,6 +162,7 @@ class MapComponent extends Component {
         })
     }
 
+
     render() {
 
         const showModal = () => {
@@ -174,10 +182,11 @@ class MapComponent extends Component {
         const handleCancel = () => {
             this.setState({isModalOpen: false})
         };
+
         return (
             <div>
                 <div id="container" className="map" style={{height: '800px'}}/>
-                <div className={"info"}>操作说明：标点按路线顺序标记 跨度不能太大</div>
+                <div className={"info"}>操作说明：标点按路线顺序标记 跨度不要太大</div>
                 <div className={"info info2"}>
                     <Input placeholder="输入目标区域地址" onChange={this.handelChangePos.bind(this)}/>
                     <Button type="link" onClick={debounce(this.forward)}>点击跳转</Button>
@@ -190,6 +199,7 @@ class MapComponent extends Component {
                     <div className={"input-item"}>
                         <input type="radio" checked={true} readOnly={true}/><span
                         className="input-text">画点</span>
+                        <span className={"mile"}>{(this.state.distance / 1000).toFixed(2)} km</span>
                     </div>
                     <div className="input-item">
                         <input id="clear" type="button" className={"btn"} onClick={this.clear} value="清除所有"/>
@@ -198,7 +208,7 @@ class MapComponent extends Component {
                         <input id="upload" type="button" className={"btn"} onClick={showModal} value="点击上传"/>
                         <Modal title="Upload" open={this.state.isModalOpen} onOk={handleOk}
                                onCancel={handleCancel}>
-                            <UploadDetail routeLine={this.state.positions}/>
+                            <UploadDetail routeLine={this.state.positions} distance={this.state.distance}/>
                         </Modal>
                     </div>
                 </div>
