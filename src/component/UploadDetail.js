@@ -1,4 +1,4 @@
-import {Component} from "react";
+import {Component, useRef} from "react";
 import {
     Form, Input, Button, InputNumber
 
@@ -13,7 +13,8 @@ class UploadDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            distance: this.props.distance
+            distance: this.props.distance,
+            click: true
         }
     }
 
@@ -28,6 +29,7 @@ class UploadDetail extends Component {
         const layout = {
             labelCol: {span: 5}, wrapperCol: {span: 16},
         };
+
         const onFinish = (values) => {
 
             values = oneTrim(values)
@@ -46,9 +48,14 @@ class UploadDetail extends Component {
                     return
                 }
             }
+            this.setState({click: false})
             api.uploadDetail(values, values.ak).then(res => {
+                setTimeout(() => {
+                    this.setState({click: true})
+                }, 2000)
                 if (res.code !== 0) return
                 let id = res.data.id
+
                 let crc = setInterval(() => {
                     api.getResult(id, values.ak).then((res) => {
                         if (res.code !== 2) {
@@ -59,65 +66,63 @@ class UploadDetail extends Component {
             })
         };
         const validateMessages = {
-            required: '${label} is required!',
-            types: {
+            required: '${label} is required!', types: {
                 number: '${label} is not a valid number!',
-            },
-            number: {
+            }, number: {
                 range: '${label} must be between ${min} and ${max}',
             },
         };
-        return (
-            <Form  {...layout} name="nest-messages"
-                   onFinish={onFinish}
-                   validateMessages={validateMessages}
+        return (<Form  {...layout} name="nest-messages"
+                       onFinish={onFinish}
+                       validateMessages={validateMessages}
+        >
+            <Form.Item
+
+                name={['username']}
+                label="手机号"
+                rules={[{
+                    required: true,
+                },]}
             >
-                <Form.Item
-                    name={['username']}
-                    label="手机号"
-                    rules={[{
-                        required: true,
-                    },]}
-                >
-                    <Input placeholder="手机号"/>
-                </Form.Item>
-                <Form.Item
-                    name={['password']}
-                    label="密码"
-                    rules={[{
-                        required: true,
-                    },]}
-                >
-                    <Input placeholder="密码"/>
-                </Form.Item>
-                <Form.Item
-                    tooltip={"1.00 ~ 3.00 km"}
-                    name={['mile']}
-                    label="跑步里程"
-                    rules={[{
-                        type: 'number', min: 1, max: 3, required: true,
-                    },]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-                <Form.Item name={['routeLine']} label="跑步路线">
-                    <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
-                </Form.Item>
-                <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
-                    <Input placeholder="没有邀请码将无法提交任务"/>
-                </Form.Item>
-                <Form.Item name={['schoolName']} label="学校名称">
-                    <Input placeholder="非必填"/>
-                </Form.Item>
-                <Form.Item name={['schoolId']} label="学校ID">
-                    <Input placeholder="非必填"/>
-                </Form.Item>
-                <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
-                    <Button shape="round" htmlType="submit" style={{color: "#4682B4"}}>
-                        点击上传
-                    </Button>
-                </Form.Item>
-            </Form>)
+                <Input placeholder="手机号"/>
+            </Form.Item>
+            <Form.Item
+                name={['password']}
+                label="密码"
+                rules={[{
+                    required: true,
+                },]}
+            >
+                <Input placeholder="密码"/>
+            </Form.Item>
+            <Form.Item
+                tooltip={"1.00 ~ 3.00 km"}
+                name={['mile']}
+                label="跑步里程"
+                rules={[{
+                    type: 'number', min: 1, max: 3, required: true,
+                },]}
+            >
+                <InputNumber/>
+            </Form.Item>
+            <Form.Item name={['routeLine']} label="跑步路线">
+                <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
+            </Form.Item>
+            <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
+                <Input placeholder="没有邀请码将无法提交任务"/>
+            </Form.Item>
+            <Form.Item name={['schoolName']} label="学校名称">
+                <Input placeholder="非必填"/>
+            </Form.Item>
+            <Form.Item name={['schoolId']} label="学校ID">
+                <Input placeholder="非必填"/>
+            </Form.Item>
+            <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
+                <Button shape="round" htmlType='submit' disabled={!this.state.click} style={{color: "#4682B4"}}>
+                    点击上传
+                </Button>
+            </Form.Item>
+        </Form>)
     }
 }
 
