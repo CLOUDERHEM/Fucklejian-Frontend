@@ -1,4 +1,3 @@
-// import './App.css';
 import MapComponent from "./component/MapComponent";
 import api from "./api/api";
 import {message, notification, Result} from "antd";
@@ -13,34 +12,36 @@ class App extends Component {
         }
     }
 
+    delayMessage = (msg, type, time,) => {
+        setTimeout(() => {
+            if (type === 1) {
+                message.error(msg).then()
+            } else {
+                message.success(msg).then()
+            }
+        }, time)
+
+    }
 
     componentDidMount() {
         api.queryNotice().then(res => {
-            if (res.code !== 0 || res.code.show === 0) {
+            if (res.code !== 0) {
                 return
             }
             if (res.data.show === 0) {
                 this.setState({show: false})
+                return
             }
-            if (res.data.type === 0) {
-                setTimeout(() => {
-                    message.success(res.data.msg)
-                }, 1200)
-            } else if (res.data.type === 1) {
-                setTimeout(() => {
-                    message.error(res.data.msg)
-                }, 1200)
-            } else if (res.data.type === 2) {
+            if (res.data.type === 2) {
                 setTimeout(() => {
                     notification.open({
                         message: res.data.title,
                         description: res.data.msg,
-                        onClick: () => {
-                            // console.log('Notification Clicked!');
-                        },
                         placement: 'bottomLeft'
                     });
                 }, 1200)
+            } else {
+                this.delayMessage(res.data.msg, res.data.type, 1200)
             }
 
         })

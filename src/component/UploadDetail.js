@@ -1,6 +1,6 @@
 import {Component, useRef} from "react";
 import {
-    Form, Input, Button, InputNumber
+    Form, Input, Button, InputNumber, Popconfirm
 
 } from 'antd';
 import api from "../api/api";
@@ -27,7 +27,7 @@ class UploadDetail extends Component {
 
     render() {
         const layout = {
-            labelCol: {span: 5}, wrapperCol: {span: 16},
+            labelCol: {span: 5}, wrapperCol: {span: 17},
         };
 
         const onFinish = (values) => {
@@ -65,19 +65,20 @@ class UploadDetail extends Component {
                 }, 1000)
             })
         };
+
         const validateMessages = {
-            required: '${label} is required!', types: {
-                number: '${label} is not a valid number!',
+            required: '${label} 必填!', types: {
+                number: '${label} 不是数字!',
             }, number: {
-                range: '${label} must be between ${min} and ${max}',
+                range: '${label} 必需在 ${min}.00 ~ ${max}.00 之间',
             },
         };
-        return (<Form  {...layout} name="nest-messages"
+
+        return (<Form  {...layout}
                        onFinish={onFinish}
                        validateMessages={validateMessages}
         >
             <Form.Item
-
                 name={['username']}
                 label="手机号"
                 rules={[{
@@ -111,14 +112,12 @@ class UploadDetail extends Component {
             <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
                 <Input placeholder="没有邀请码将无法提交任务"/>
             </Form.Item>
-            <Form.Item name={['schoolName']} label="学校名称">
-                <Input placeholder="非必填"/>
-            </Form.Item>
-            <Form.Item name={['schoolId']} label="学校ID">
-                <Input placeholder="非必填"/>
-            </Form.Item>
             <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
-                <Button shape="round" htmlType='submit' disabled={!this.state.click} style={{color: "#4682B4"}}>
+                <Button type={'link'}
+                        shape="round"
+                        htmlType='submit'
+                        disabled={!this.state.click}
+                        style={{color: "#4682B4"}}>
                     点击上传
                 </Button>
             </Form.Item>

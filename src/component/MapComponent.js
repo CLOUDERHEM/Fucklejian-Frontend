@@ -10,8 +10,8 @@ import api from "../api/api";
 import debounce from "../util/click";
 
 class MapComponent extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.autoComplete = {}
         this.mouseTool = {}
         this.center = [104.185574, 30.827591]
@@ -22,7 +22,6 @@ class MapComponent extends Component {
         this.state = {
             positions: [],
             overlays: [],
-            draw: 1,
             isModalOpen: false,
             inputPos: '',
             inputAk: '',
@@ -37,29 +36,7 @@ class MapComponent extends Component {
             plugins: ['AMap.MouseTool', 'AMap.AutoComplete'],
         }).then((AMap) => {
                 this.amap = AMap
-                this.map = new AMap.Map("container", {
-                    zoom: 15,
-                    center: this.center,
-                });
-                this.mouseTool = new AMap.MouseTool(this.map);
-                this.mouseTool.on('draw', (e) => {
-                    let last = this.state.positions.at(-1)
-                    if (last !== undefined) {
-                        let add = this.amap.GeometryUtil.distance([e.obj.getPosition().lng, e.obj.getPosition().lat],
-                            [last.longitude, last.latitude]) + this.state.distance;
-                        this.setState({distance: add})
-                    }
-                    this.state.positions.push({
-                        'latitude': e.obj.getPosition().lat,
-                        'longitude': e.obj.getPosition().lng
-                    })
-                    this.state.overlays.push(e.obj);
-                })
-                this.mouseTool.marker({});
-
-                AMap.plugin('AMap.Autocomplete', () => {
-                    this.autoComplete = new AMap.AutoComplete(this.autoOptions);
-                })
+                this.init()
             }
         ).catch(e => {
                 console.log(e);
@@ -80,22 +57,34 @@ class MapComponent extends Component {
                 return;
             }
             let location = result.tips[0].location;
-            let center = [location.lng, location.lat]
-            this.map = new this.amap.Map("container", {
-                zoom: 15,
-                center: center,
-            });
-            this.mouseTool = new this.amap.MouseTool(this.map);
-            this.mouseTool.on('draw', (e) => {
-                // console.log(e.obj._position)
-                this.state.positions.push({
-                    'latitude': e.obj.getPosition().lat,
-                    'longitude': e.obj.getPosition().lng
-                })
-                this.state.overlays.push(e.obj);
-            })
-            this.mouseTool.marker({});
+            this.center = [location.lng, location.lat]
+            this.init()
         })
+    }
+
+    init = () => {
+        this.map = new this.amap.Map("container", {
+            zoom: 15,
+            center: this.center,
+        });
+        this.mouseTool = new this.amap.MouseTool(this.map);
+        this.mouseTool.on('draw', (e) => {
+            let last = this.state.positions.at(-1)
+            if (last !== undefined) {
+                let add = this.amap.GeometryUtil.distance([e.obj.getPosition().lng, e.obj.getPosition().lat],
+                    [last.longitude, last.latitude]) + this.state.distance;
+                this.setState({distance: add})
+            }
+            this.state.positions.push({
+                'latitude': e.obj.getPosition().lat,
+                'longitude': e.obj.getPosition().lng
+            })
+            this.state.overlays.push(e.obj);
+        })
+        this.mouseTool.marker({});
+        // for search
+        this.autoComplete = new this.amap.AutoComplete(this.autoOptions);
+        this.clear()
     }
 
     clear = () => {
@@ -113,7 +102,7 @@ class MapComponent extends Component {
             swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
             return
         }
-        download.downloadFile(`Path-${new Date().getTime()}.bak.json`, this.state.positions)
+        download.downloadFile(`${new Date().getTime()}.path.json`, this.state.positions)
     }
 
     queryAk = () => {
@@ -121,14 +110,14 @@ class MapComponent extends Component {
             swal("你还没有输入邀请码呢!", '', "error").then();
             return
         }
-        const reg = /###\S{1,},\d{1,}/
+        const reg = /###\S+,\d+/
         if (reg.test(this.state.inputAk)) {
             let str = this.state.inputAk.substring(3);
             // console.log(str)
-            let strs = str.split(',')
-            api.generateAk(parseInt(strs[1]), strs[0]).then(res => {
+            let args = str.split(',')
+            api.generateAk(parseInt(args[1]), args[0]).then(res => {
                 if (res.code !== 0) {
-                    swal("私人秘钥错误", "请输入正确的私人秘钥", "error")
+                    swal("私人秘钥错误", "请输入正确的私人秘钥!", "error")
                 } else {
                     swal(`${res.data.ak}`)
                 }
@@ -185,10 +174,10 @@ class MapComponent extends Component {
 
         return (
             <div>
-                <div id="container" className="map" style={{height: '800px'}}/>
-                <div className={"info"}>操作说明：标点按路线顺序标记 跨度不要太大</div>
+                <div id="container" className="map"/>
+                <div className={"info"}>操作说明：按路线顺序标记 点勿过稀或过密</div>
                 <div className={"info info2"}>
-                    <Input placeholder="输入目标区域地址" onChange={this.handelChangePos.bind(this)}/>
+                    <Input placeholder="目标地址跳转" onChange={this.handelChangePos.bind(this)}/>
                     <Button type="link" onClick={debounce(this.forward)}>点击跳转</Button>
                 </div>
                 <div className={"info info3"}>
@@ -206,7 +195,10 @@ class MapComponent extends Component {
                         <input id="export" type="button" className={"btn"} onClick={debounce(this.exportData)}
                                value="导出路线"/>
                         <input id="upload" type="button" className={"btn"} onClick={showModal} value="点击上传"/>
-                        <Modal title="Upload" open={this.state.isModalOpen} onOk={handleOk}
+                        <Modal title="Upload"
+                               footer=''
+                               open={this.state.isModalOpen}
+                               onOk={handleOk}
                                onCancel={handleCancel}>
                             <UploadDetail routeLine={this.state.positions} distance={this.state.distance}/>
                         </Modal>
