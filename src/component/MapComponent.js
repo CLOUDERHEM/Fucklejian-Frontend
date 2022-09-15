@@ -175,7 +175,7 @@ class MapComponent extends Component {
         return (
             <div>
                 <div id="container" className="map"/>
-                <div className={"info"}>操作说明：按路线顺序标记 点勿过稀或过密</div>
+                <div className={"info info1"}>操作说明：按路线顺序标记 点勿过稀或过密</div>
                 <div className={"info info2"}>
                     <Input placeholder="目标地址跳转" onChange={this.handelChangePos.bind(this)}/>
                     <Button type="link" onClick={debounce(this.forward)}>点击跳转</Button>
@@ -184,7 +184,7 @@ class MapComponent extends Component {
                     <Input placeholder="邀请码使用查询" onChange={this.handelChangeAK.bind(this)}/>
                     <Button type="link" onClick={debounce(this.queryAk)}>点击查询</Button>
                 </div>
-                <div className="input-card" style={{width: '25rem'}}>
+                <div className="input-card input-card1" >
                     <div className={"input-item"}>
                         <input type="radio" checked={true} readOnly={true}/><span
                         className="input-text">画点</span>

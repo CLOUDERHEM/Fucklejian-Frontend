@@ -5,6 +5,17 @@
 .info3 {
     margin-top: 10em;
 }
-.map{
-    height: 800px;
+
+.map {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.info1, .info2, .info3 {
+    width: 25rem;
+}
+
+.input-card1 {
+    width: 25rem;
 }

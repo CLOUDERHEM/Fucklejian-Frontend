@@ -32,6 +32,11 @@ class UploadDetail extends Component {
 
         const onFinish = (values) => {
 
+            if (this.state.distance / 1000 > 10) {
+                swal("距离过长", "跑步里程标记只能在10km以内", "error")
+                return;
+            }
+
             values = oneTrim(values)
 
             if (values.routeLine === undefined || values.routeLine === '') {

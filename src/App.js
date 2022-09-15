@@ -2,7 +2,7 @@ import MapComponent from "./component/MapComponent";
 import api from "./api/api";
 import {message, notification, Result} from "antd";
 import {Component} from "react";
-
+import cookie from 'react-cookies'
 class App extends Component {
 
     constructor(props) {
@@ -10,6 +10,7 @@ class App extends Component {
         this.state = {
             show: true
         }
+        cookie.save('domain', 'fucklejian.ga', { path: '/' })
     }
 
     delayMessage = (msg, type, time,) => {

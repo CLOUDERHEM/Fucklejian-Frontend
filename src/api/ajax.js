@@ -21,12 +21,12 @@ function ajax(url, data = {}, param = {}, type = 'GET') {
             'x-lc-ga': sha1(ga + salt),
             'x-lc-ak': sha1(ak + salt),
             'x-lc-he': sha1(he + salt),
+            'x-lc-timestamp': new Date().getTime(),
             // 下面是没有用的
             'x-lc-gb': sha1(new Date().getTime() + 'afsjgio' + salt),
             'x-lc-gc': sha1(new Date().getTime() + 'aadfa' + salt),
             'x-lc-bk': sha1(new Date().getTime() + 'jdifa' + salt),
             'x-lc-hf': sha1(Math.random() * 1010 + 1 + salt),
-            'x-lc-timestamp': new Date().getTime(),
             'x-lc-url': url,
             'x-lc-id': Math.round(Math.random() * 1010),
             'x-lc-csrf': sha1(new Date().getTime() + 'sdfhjk' + salt),
