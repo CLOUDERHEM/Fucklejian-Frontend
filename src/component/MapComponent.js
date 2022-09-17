@@ -53,7 +53,7 @@ class MapComponent extends Component {
         }
         this.autoComplete.search(keywords, (status, result) => {
             if (result.count <= 0) {
-                swal("没有找到改地址", "", 'error').then()
+                swal("没有找到该地址", "", 'error').then()
                 return;
             }
             let location = result.tips[0].location;
@@ -161,6 +161,10 @@ class MapComponent extends Component {
                 swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "warning").then();
                 return
             }
+            if (this.state.distance > 5 * 1000) {
+                swal("距离过长!", "标记里程最大为5km", "error").then();
+                return;
+            }
             this.setState({isModalOpen: true})
         };
 
@@ -184,7 +188,7 @@ class MapComponent extends Component {
                     <Input placeholder="邀请码使用查询" onChange={this.handelChangeAK.bind(this)}/>
                     <Button type="link" onClick={debounce(this.queryAk)}>点击查询</Button>
                 </div>
-                <div className="input-card input-card1" >
+                <div className="input-card input-card1">
                     <div className={"input-item"}>
                         <input type="radio" checked={true} readOnly={true}/><span
                         className="input-text">画点</span>
