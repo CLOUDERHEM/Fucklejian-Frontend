@@ -70,15 +70,25 @@ class MapComponent extends Component {
         this.mouseTool = new this.amap.MouseTool(this.map);
         this.mouseTool.on('draw', (e) => {
             let last = this.state.positions.at(-1)
+            let isValid = true
             if (last !== undefined) {
-                let add = this.amap.GeometryUtil.distance([e.obj.getPosition().lng, e.obj.getPosition().lat],
-                    [last.longitude, last.latitude]) + this.state.distance;
-                this.setState({distance: add})
+                let add = this.amap.GeometryUtil.distance(
+                    [e.obj.getPosition().lng, e.obj.getPosition().lat],
+                    [last.longitude, last.latitude]);
+                // 距离小于两米的点不加入集合
+                if (add < 2) {
+                    isValid = false
+                } else {
+                    let distance = this.state.distance + add
+                    this.setState({distance})
+                }
             }
-            this.state.positions.push({
-                'latitude': e.obj.getPosition().lat,
-                'longitude': e.obj.getPosition().lng
-            })
+            if (isValid) {
+                this.state.positions.push({
+                    'latitude': e.obj.getPosition().lat,
+                    'longitude': e.obj.getPosition().lng
+                })
+            }
             this.state.overlays.push(e.obj);
         })
         this.mouseTool.marker({});
