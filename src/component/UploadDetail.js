@@ -43,7 +43,12 @@ class UploadDetail extends Component {
                 values.routeLine = this.props.routeLine
             } else {
                 try {
-                    values.routeLine = JSON.parse(values.routeLine)
+                    let routeLine = JSON.parse(values.routeLine);
+                    if (!routeLine || typeof routeLine !== 'object') {
+                        swal('跑步路线解析错误', '请检查JSON格式是否有误', 'error')
+                        return
+                    }
+                    values.routeLine = routeLine
                 } catch (e) {
                     swal('跑步路线解析错误', '请检查JSON格式是否有误', 'error')
                     return
