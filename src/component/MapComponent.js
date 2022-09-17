@@ -109,7 +109,7 @@ class MapComponent extends Component {
             swal("你还没有标记点呢!", '', "error").then();
             return
         } else if (this.state.positions.length < 10) {
-            swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
+            swal("有效标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
             return
         }
         download.downloadFile(`${new Date().getTime()}.path.json`, this.state.positions)
@@ -166,9 +166,9 @@ class MapComponent extends Component {
 
         const showModal = () => {
             if (this.state.positions.length === 0) {
-                swal("没有标点!", '请确认接下来填入的路径合理!', "warning").then();
+                swal("没有标点!", '请确认接下来填入的自定义路径合理!', "warning").then();
             } else if (this.state.positions.length < 10) {
-                swal("标记点数量不够", "标记点数量最少为10个, 且路线最好合理且平滑", "warning").then();
+                swal("有效标记点数量不够", "有效标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
                 return
             }
             if (this.state.distance > 5 * 1000) {

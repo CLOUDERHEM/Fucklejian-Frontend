@@ -67,7 +67,7 @@ class UploadDetail extends Component {
                             clearTimeout(crc)
                         }
                     })
-                }, 1000)
+                }, 2000)
             })
         };
 
