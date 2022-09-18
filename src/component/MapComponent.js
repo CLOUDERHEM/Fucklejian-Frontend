@@ -69,7 +69,9 @@ class MapComponent extends Component {
         });
         this.mouseTool = new this.amap.MouseTool(this.map);
         this.mouseTool.on('draw', (e) => {
-            let last = this.state.positions.at(-1)
+
+            // let last = this.state.positions.at(-1) 浏览器兼容问题
+            let last = this.state.positions[this.state.positions.length - 1]
             let isValid = true
             if (last !== undefined) {
                 let add = this.amap.GeometryUtil.distance(
