@@ -52,7 +52,7 @@ class MapComponent extends Component {
             return
         }
         this.autoComplete.search(keywords, (status, result) => {
-            if (result.count <= 0) {
+            if (status !== "complete") {
                 swal("没有找到该地址", "", 'error').then()
                 return;
             }
