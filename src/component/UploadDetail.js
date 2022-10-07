@@ -1,12 +1,12 @@
-import {Component, useRef} from "react";
+import {Component} from "react";
 import {
-    Form, Input, Button, InputNumber, Popconfirm
+    Form, Input, Button, InputNumber
 
 } from 'antd';
 import api from "../api/api";
-import oneTrim from "../util/trim";
 import swal from "sweetalert";
 import React from "react";
+
 
 class UploadDetail extends Component {
 
@@ -24,6 +24,18 @@ class UploadDetail extends Component {
         })
     }
 
+    trim = (values) => {
+        if (values.username !== undefined) {
+            values.username = values.username.trim()
+        }
+        if (values.password !== undefined) {
+            values.password = values.password.trim()
+        }
+        if (values.ak !== undefined) {
+            values.ak = values.ak.trim()
+        }
+        return values;
+    }
 
     render() {
         const layout = {
@@ -37,7 +49,7 @@ class UploadDetail extends Component {
                 return;
             }
 
-            values = oneTrim(values)
+            values = this.trim(values)
 
             if (values.routeLine === undefined || values.routeLine === '') {
                 values.routeLine = this.props.routeLine
