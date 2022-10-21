@@ -131,7 +131,13 @@ class UploadDetail extends Component {
             <Form.Item name={['routeLine']} label="跑步路线">
                 <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
             </Form.Item>
-            <Form.Item name={['ak']} label="邀请码" rules={[{required: true}]}>
+            <Form.Item
+                name={['ak']}
+                label="邀请码"
+                rules={[{required: true}]}
+                initialValue={
+                    new URL(document.location.href).searchParams.get('ak')
+                }>
                 <Input placeholder="没有邀请码将无法提交任务"/>
             </Form.Item>
             <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
