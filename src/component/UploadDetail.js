@@ -119,26 +119,17 @@ class UploadDetail extends Component {
                 <Input placeholder="密码"/>
             </Form.Item>
             <Form.Item
-                tooltip={"1.00 ~ 3.00 km"}
+                tooltip={"1.00 ~ 5.00 km"}
                 name={['mile']}
                 label="跑步里程"
                 rules={[{
-                    type: 'number', min: 1, max: 3, required: true,
+                    type: 'number', min: 1, max: 10, required: true,
                 },]}
             >
                 <InputNumber/>
             </Form.Item>
             <Form.Item name={['routeLine']} label="跑步路线">
                 <Input.TextArea placeholder="跑步路线, 需满足JSON格式, 如有标记路线则不填"/>
-            </Form.Item>
-            <Form.Item
-                name={['ak']}
-                label="邀请码"
-                rules={[{required: true}]}
-                initialValue={
-                    new URL(document.location.href).searchParams.get('ak')
-                }>
-                <Input placeholder="没有邀请码将无法提交任务"/>
             </Form.Item>
             <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
                 <Button type={'link'}

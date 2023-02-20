@@ -6,7 +6,6 @@ import './index.css'
 import {Button, Input, Modal} from "antd";
 import UploadDetail from "./UploadDetail";
 import download from "../util/download";
-import api from "../api/api";
 import debounce from "../util/click";
 
 class MapComponent extends Component {
@@ -117,40 +116,6 @@ class MapComponent extends Component {
         download.downloadFile(`${new Date().getTime()}.path.json`, this.state.positions)
     }
 
-    queryAk = () => {
-        if (this.state.inputAk === '') {
-            swal("你还没有输入邀请码呢!", '', "error").then();
-            return
-        }
-        const reg = /###\S+,\d+/
-        if (reg.test(this.state.inputAk)) {
-            let str = this.state.inputAk.substring(3);
-            // console.log(str)
-            let args = str.split(',')
-            api.generateAk(parseInt(args[1]), args[0]).then(res => {
-                if (res.code !== 0) {
-                    swal("私人秘钥错误", "请输入正确的私人秘钥!", "error")
-                } else {
-                    swal(`${res.data.ak}`)
-                }
-            })
-        } else {
-            api.queryAk(this.state.inputAk).then(res => {
-                if (res.code !== 0) {
-                    return
-                }
-                let data = res.data
-                // console.log(data)
-                let msg = `已使用次数: ${data.usageCount}次
-            
-            剩余次数: ${(data.totalCount - data.usageCount).toFixed(0)}次
-            
-            上次使用: ${new Date(data.updateTime).toLocaleString()}`
-                swal(msg)
-            })
-        }
-    }
-
     handelChangePos(e) {
         this.setState({
             inputPos: e.target.value
@@ -163,7 +128,6 @@ class MapComponent extends Component {
         })
     }
 
-
     render() {
 
         const showModal = () => {
@@ -173,7 +137,7 @@ class MapComponent extends Component {
                 swal("有效标记点数量不够", "有效标记点数量最少为10个, 且路线最好合理且平滑", "error").then();
                 return
             }
-            if (this.state.distance > 5 * 1000) {
+            if (this.state.distance > 10 * 1000) {
                 swal("距离过长!", "标记里程最大为5km", "error").then();
                 return;
             }
@@ -195,10 +159,6 @@ class MapComponent extends Component {
                 <div className={"info info2"}>
                     <Input placeholder="目标地址跳转" onChange={this.handelChangePos.bind(this)}/>
                     <Button type="link" onClick={debounce(this.forward)}>点击跳转</Button>
-                </div>
-                <div className={"info info3"}>
-                    <Input placeholder="邀请码使用查询" onChange={this.handelChangeAK.bind(this)}/>
-                    <Button type="link" onClick={debounce(this.queryAk)}>点击查询</Button>
                 </div>
                 <div className="input-card input-card1">
                     <div className={"input-item"}>
