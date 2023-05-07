@@ -71,10 +71,10 @@ class UploadDetail extends Component {
                 }
             }
             this.setState({click: false})
+            setTimeout(() => {
+                this.setState({click: true})
+            }, 5000)
             api.uploadDetail(values, values.ak).then(res => {
-                setTimeout(() => {
-                    this.setState({click: true})
-                }, 2000)
                 if (res.code !== 0) return
                 let id = res.data.id
 
